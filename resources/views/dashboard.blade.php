@@ -74,7 +74,7 @@
                             <button
                                 type="submit"
                                 id="send-button"
-                                class="rounded-2xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                class="rounded-2xl bg-black px-5 py-3 text-sm font-medium text-white"
                             >
                                 Kirim
                             </button>
@@ -94,6 +94,7 @@
         const sendButton = document.getElementById('send-button');
         const fileInput = document.getElementById('file-input');
         const previewContainer = document.getElementById('preview-container');
+        const button = document.getElementById("send-button");
 
         let selectedFiles = [];
 
@@ -155,6 +156,19 @@
             this.style.height = `${Math.min(this.scrollHeight, 160)}px`;
         });
 
+        // Auto-focus saat halaman pertama kali dibuka
+        document.addEventListener('DOMContentLoaded', function() {
+            messageInput.focus();
+        });
+
+        // Klik tekan tombol enter = menekan tombol kirim
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                button.click();
+            }
+        });
+        
         fileInput.addEventListener('change', function(e) {
             selectedFiles = Array.from(e.target.files);
             previewContainer.innerHTML = '';
