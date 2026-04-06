@@ -73,7 +73,24 @@ class MessageController extends Controller
 
         return response()->json([
             'chat_id' => $chat->id,
-            'reply' => $reply,
+            'reply' => $this->formatReply($reply),
         ]);
+    }
+
+    // function formater text reply
+    private function formatReply($reply)
+    {
+        // replace **text** menjadi <strong>text</strong>
+        $reply = str_replace('**', '<strong>', $reply);
+        $reply = str_replace('**', '</strong>', $reply);
+        // replace *text* menjadi <strong>text</strong>
+        $reply = str_replace('*', '<strong>', $reply);
+        $reply = str_replace('*', '</strong>', $reply);
+        // replace - text menjadi <li>text</li>
+        $reply = str_replace('- ', '<li>', $reply);
+        $reply = str_replace('- ', '</li>', $reply);
+        // replace \n menjadi <br>
+        $reply = str_replace('\n', '<br>', $reply);
+        return $reply;
     }
 }
