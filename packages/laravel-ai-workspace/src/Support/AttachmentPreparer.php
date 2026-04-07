@@ -25,22 +25,12 @@ class AttachmentPreparer
             $attachment = [
                 'name' => $file->getClientOriginalName(),
                 'path' => $path,
+                'disk' => config('ai-workspace.disk', 'public'),
                 'mime' => $mime,
                 'size' => $file->getSize(),
                 'type' => $this->detectType($mime, $file->getClientOriginalExtension()),
                 'url' => asset('storage/' . $path),
             ];
-
-            if ($attachment['type'] === 'image') {
-                $attachment['base64'] = base64_encode(file_get_contents($file->getRealPath()));
-            }
-
-            if ($attachment['type'] === 'document') {
-                $attachment['text_content'] = $this->extractDocumentText(
-                    $file->getRealPath(),
-                    $file->getClientOriginalExtension()
-                );
-            }
 
             $attachments[] = $attachment;
         }
@@ -50,19 +40,21 @@ class AttachmentPreparer
 
     public function detectType(string $mime, string $extension): string
     {
+        $extension = strtolower($extension);
+
         if (str_starts_with($mime, 'image/')) {
             return 'image';
+        }
+
+        if (str_starts_with($mime, 'audio/') || $extension === 'webm' && str_contains($mime, 'audio')) {
+            return 'audio';
         }
 
         if (str_starts_with($mime, 'video/')) {
             return 'video';
         }
 
-        if (str_starts_with($mime, 'audio/')) {
-            return 'audio';
-        }
-
-        if (in_array(strtolower($extension), config('ai-workspace.document_extensions', []), true)) {
+        if (in_array($extension, config('ai-workspace.document_extensions', []), true)) {
             return 'document';
         }
 

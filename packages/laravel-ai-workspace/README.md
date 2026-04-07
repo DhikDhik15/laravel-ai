@@ -7,17 +7,17 @@ Project ini dirancang agar bersifat *reusable* sehingga sangat bisa digunakan pa
 ## 📦 Kebutuhan Sistem
 - **PHP** `^8.3`
 - **Laravel Framework** `^13.0`
-- **Laravel AI** (`laravel/ai`) `^0.4.2`
+- **Laravel AI** (`laravel/ai`) `^0.4.2`  
 
 ## 🚀 Instalasi pada Proyek Laravel Lain
 
 Karena paket ini saat ini disiapkan di struktur sumber daya lokal (`packages/laravel-ai-workspace`), Anda perlu menyalinnya ke proyek Anda yang lain atau mengatur repositori pada `composer.json` lokal.
 
 ### Cara 1: Menggunakan Path Repository (Local Symlink)
-
+ 
 1. **Salin Direktori**
-   Salin direktori `packages/laravel-ai-workspace` dari sumber aslinya ke proyek Laravel baru Anda, misalnya ditempatkan di `{Proyek_Baru}/packages/laravel-ai-workspace`.
-
+   Salin direktori `packages/laravel-ai-workspace` dari sumber aslinya ke proyek Laravel baru Anda, misalnya ditempatkan di `{Proyek_Baru}/packages/laravel-ai-workspace`.     
+ 
 2. **Daftarkan di `composer.json`**
    Buka file `composer.json` di *root* proyek Laravel baru Anda dan tambahkan *repository* tipe *path*:
    ```json

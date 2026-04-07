@@ -93,7 +93,9 @@ class GeminiService implements StreamsChatResponses
                 return new AssistantMessage($msg->content);
             }
 
-            return $this->createUserMessage($msg);
+            // Optimization: Only send text for history messages to save tokens/rate-limit
+            // Attachments are only needed for the current active prompt.
+            return new UserMessage(Str::of($msg->content ?? '')->trim()->toString());
         })->toArray();
 
         return [$history, $this->createUserMessage($promptSource)];
@@ -115,12 +117,52 @@ class GeminiService implements StreamsChatResponses
                     continue;
                 }
 
-                if (($file['type'] ?? null) === 'image' && ! empty($file['base64'])) {
-                    $attachments[] = new Base64Image($file['base64'], $file['mime'] ?? 'image/jpeg');
+                if (($file['type'] ?? null) === 'image') {
+                    if (! empty($file['base64'])) {
+                        $attachments[] = new \Laravel\Ai\Files\Base64Image($file['base64'], $file['mime'] ?? 'image/jpeg');
+                    } elseif (! empty($file['path'])) {
+                        $attachments[] = new \Laravel\Ai\Files\StoredImage($file['path'], $file['disk'] ?? 'public');
+                    }
                 }
 
-                if (($file['type'] ?? null) === 'document' && ! empty($file['text_content'])) {
-                    $documentContext[] = "Dokumen {$file['name']}:\n" . $file['text_content'];
+                $isVoiceNote = str_starts_with($file['name'] ?? '', 'Voice_Note_');
+                
+                // Force audio MIME for voice notes to avoid Gemini expecting video frames
+                $isOgg = str_ends_with($file['name'] ?? '', '.ogg') || str_contains($file['mime'] ?? '', 'ogg');
+                $mime = $isVoiceNote ? ($isOgg ? 'audio/ogg' : 'audio/webm') : ($file['mime'] ?? 'audio/webm');
+
+                Log::info('Gemini Attachment Debug:', [
+                    'name' => $file['name'] ?? 'unknown',
+                    'type' => $file['type'] ?? 'unknown',
+                    'mime' => $mime,
+                    'is_voice_note' => $isVoiceNote
+                ]);
+
+                if ((($file['type'] ?? null) === 'audio' || $isVoiceNote) && ! empty($file['path'])) {
+                    if ($content = \Illuminate\Support\Facades\Storage::disk($file['disk'] ?? 'public')->get($file['path'])) {
+                        $attachments[] = new \Laravel\Ai\Files\Base64Audio(base64_encode($content), $mime);
+                        continue;
+                    }
+                }
+
+                if (($file['type'] ?? null) === 'document') {
+                    if (! empty($file['text_content'])) {
+                        $documentContext[] = "Dokumen {$file['name']}:\n" . $file['text_content'];
+                    } elseif (! empty($file['path'])) {
+                        if (in_array(($file['disk'] ?? 'public'), ['public', 'local'])) {
+                            $absolutePath = \Illuminate\Support\Facades\Storage::disk($file['disk'] ?? 'public')->path($file['path']);
+                            $attachments[] = new \Laravel\Ai\Files\LocalDocument($absolutePath, $file['mime'] ?? 'application/pdf');
+                        } else {
+                            $attachments[] = new \Laravel\Ai\Files\StoredDocument($file['path'], $file['disk'] ?? 'public');
+                        }
+                    }
+                }
+
+                if (in_array(($file['type'] ?? null), ['video', 'file']) && ! empty($file['path'])) {
+                    if ($content = \Illuminate\Support\Facades\Storage::disk($file['disk'] ?? 'public')->get($file['path'])) {
+                         // Use Base64Document which Gemini handles as inline_data for small videos
+                         $attachments[] = new \Laravel\Ai\Files\Base64Document(base64_encode($content), $file['mime'] ?? 'application/octet-stream');
+                    }
                 }
             }
         }

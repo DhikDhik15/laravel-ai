@@ -139,10 +139,16 @@
                         <div class="space-y-3">
                             <div id="preview-container" class="hidden flex-wrap gap-2 px-1 pt-1"></div>
                             <div class="flex items-end gap-3">
-                                <label for="file-input" class="flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
+                                <label for="file-input" class="flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white" title="Unggah File">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656L5.757 10.757a6 6 0 108.486 8.486L20.5 13" /></svg>
                                 </label>
                                 <input type="file" id="file-input" class="hidden" accept="image/*,video/*,audio/*,.txt,.md,.csv,.json,.xml,.log" multiple>
+                                <button type="button" id="record-button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-rose-50 text-rose-500 transition hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20" title="Rekam Suara">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+                                </button>
+                                <button type="button" id="dictate-button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 transition hover:bg-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/20" title="Dikte (Voice-to-Text)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8m-8 4h6" /></svg>
+                                </button>
                                 <div class="min-w-0 flex-1 rounded-[24px] bg-slate-100 p-2 dark:bg-slate-800">
                                     <textarea id="message" rows="1" placeholder="Tulis pesan, unggah dokumen, lalu kirim..." class="max-h-40 min-h-[48px] w-full resize-none border-none bg-transparent px-2 py-2 text-sm leading-7 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0 dark:text-slate-100 dark:placeholder:text-slate-500"></textarea>
                                 </div>
@@ -252,10 +258,23 @@
         }
 
         function attachmentCard(file) {
-            if ((file.type || file.mime || '').startsWith('image/')) {
-                return `<img src="${file.url}" alt="${esc(file.name)}" class="h-16 w-16 rounded-2xl object-cover shadow-sm">`;
+            const mime = (file.mime || file.type || '');
+            if (mime.startsWith('image/')) {
+                return `<a href="${file.url}" target="_blank" title="${esc(file.name)}"><img src="${file.url}" alt="${esc(file.name)}" class="h-20 w-20 rounded-xl object-cover shadow-sm border border-slate-200 dark:border-slate-700"></a>`;
             }
-            return `<div class="rounded-2xl bg-slate-100 px-3 py-2 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-200"><div class="font-semibold">${esc(file.name)}</div><div class="mt-1 dash-muted">${esc(file.mime || file.type || 'Lampiran')}</div></div>`;
+            if (mime.startsWith('video/')) {
+                return `<video src="${file.url}" controls class="h-28 w-auto rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 max-w-full" title="${esc(file.name)}"></video>`;
+            }
+            if (mime.startsWith('audio/')) {
+                return `<audio src="${file.url}" controls class="h-10 w-56 max-w-full rounded-full shadow-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800" title="${esc(file.name)}"></audio>`;
+            }
+            return `<a href="${file.url}" target="_blank" class="rounded-2xl bg-white px-3 py-2 text-xs text-slate-700 dash-muted border border-slate-200 hover:border-slate-300 shadow-sm dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 transition hover:bg-slate-50 dark:hover:bg-slate-750 flex items-center gap-2 max-w-xs overflow-hidden">
+                <svg class="w-4 h-4 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                <div class="min-w-0 flex-1 truncate">
+                    <div class="font-semibold text-slate-900 dark:text-slate-100 truncate">${esc(file.name)}</div>
+                    <div class="mt-0.5 text-[10px] truncate">${esc(mime || 'Lampiran')} ${file.size ? '• ' + Math.round(file.size/1024) + ' KB' : ''}</div>
+                </div>
+            </a>`;
         }
 
         function renderAttachments(files = []) {
@@ -535,16 +554,141 @@
             }
         });
 
-        fileInput.addEventListener('change', function (e) {
-            selectedFiles = Array.from(e.target.files);
+        function renderPreview() {
             previewContainer.innerHTML = '';
             if (!selectedFiles.length) return previewContainer.classList.add('hidden');
             previewContainer.classList.remove('hidden');
-            previewContainer.innerHTML = selectedFiles.map((file) => file.type.startsWith('image/')
-                ? `<img src="${URL.createObjectURL(file)}" class="h-16 w-16 rounded-2xl object-cover shadow-sm">`
-                : `<div class="rounded-2xl bg-slate-100 px-3 py-2 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-200"><div class="font-semibold">${esc(file.name)}</div><div class="mt-1 dash-muted">${esc(file.type || 'Dokumen')}</div></div>`
-            ).join('');
+            previewContainer.innerHTML = selectedFiles.map((file, i) => {
+                const url = URL.createObjectURL(file);
+                let media = `<div class="rounded-2xl bg-white shadow-sm px-3 py-2 border border-slate-200 flex items-center text-xs dark:bg-slate-800 dark:border-slate-700 text-slate-700 dark:text-slate-200"><svg class="w-3.5 h-3.5 mr-1.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg><span class="truncate max-w-[120px]">${esc(file.name)}</span></div>`;
+                if (file.type.startsWith('image/')) media = `<img src="${url}" class="h-14 w-14 rounded-2xl object-cover shadow-md border border-slate-200 dark:border-slate-700">`;
+                if (file.type.startsWith('video/')) media = `<video src="${url}" class="h-14 w-14 rounded-2xl object-cover shadow-md border border-slate-200 dark:border-slate-700"></video>`;
+                if (file.type.startsWith('audio/')) media = `<div class="rounded-2xl bg-white shadow-sm px-3 py-2 border border-slate-200 flex items-center text-xs dark:bg-slate-800 dark:border-slate-700 text-slate-700 dark:text-slate-200"><svg class="w-4 h-4 mr-1.5 text-indigo-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg><span class="truncate max-w-[120px]">${esc(file.name)}</span></div>`;
+
+                return `<div class="relative group cursor-pointer" onclick="selectedFiles.splice(${i}, 1); renderPreview();" title="Klik untuk menghapus">
+                    ${media}
+                    <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        fileInput.addEventListener('change', function (e) {
+            selectedFiles = [...selectedFiles, ...Array.from(e.target.files)];
+            renderPreview();
+            fileInput.value = '';
         });
+
+        const recordButton = document.getElementById('record-button');
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+
+        recordButton.addEventListener('click', async () => {
+            if (isRecording) {
+                mediaRecorder.stop();
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/ogg', 'audio/wav'];
+                const supportedMime = mimeTypes.find(type => MediaRecorder.isTypeSupported(type)) || 'audio/webm';
+                
+                mediaRecorder = new MediaRecorder(stream, { mimeType: supportedMime });
+
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener('stop', () => {
+                    stream.getTracks().forEach(track => track.stop());
+                    const audioBlob = new Blob(audioChunks, { type: supportedMime });
+                    const extension = supportedMime.includes('ogg') ? '.ogg' : '.webm';
+                    const audioFile = new File([audioBlob], `Voice_Note_${new Date().getTime()}${extension}`, { type: supportedMime });
+                    selectedFiles.push(audioFile);
+                    renderPreview();
+                    
+                    isRecording = false;
+                    recordButton.classList.remove('animate-pulse', 'bg-rose-500', 'text-white');
+                    recordButton.classList.add('bg-rose-50', 'text-rose-500', 'dark:bg-rose-500/10', 'dark:text-rose-400');
+                });
+
+                audioChunks = [];
+                mediaRecorder.start();
+                isRecording = true;
+                recordButton.classList.add('animate-pulse', 'bg-rose-500', 'text-white', 'hover:bg-rose-600');
+                recordButton.classList.remove('bg-rose-50', 'text-rose-500', 'dark:bg-rose-500/10', 'dark:text-rose-400');
+            } catch (e) {
+                window.appToast?.('Gagal mengakses mikropon. Pastikan izin telah diberikan.', 'error');
+            }
+        });
+
+        const dictateButton = document.getElementById('dictate-button');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isDictating = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'id-ID';
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                if (finalTranscript) {
+                    const currentPos = messageInput.selectionStart;
+                    const textBefore = messageInput.value.substring(0, currentPos);
+                    const textAfter = messageInput.value.substring(currentPos);
+                    messageInput.value = textBefore + finalTranscript + ' ' + textAfter;
+                    messageInput.dispatchEvent(new Event('input'));
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                stopDictation();
+                if (event.error === 'not-allowed') {
+                    window.appToast?.('Izin mikropon ditolak.', 'error');
+                }
+            };
+
+            recognition.onend = () => {
+                if (isDictating) recognition.start();
+            };
+
+            function stopDictation() {
+                isDictating = false;
+                recognition.stop();
+                dictateButton.classList.remove('animate-pulse', 'bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+                dictateButton.classList.add('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-500/10', 'dark:text-indigo-400');
+            }
+
+            dictateButton.addEventListener('click', () => {
+                if (isDictating) {
+                    stopDictation();
+                } else {
+                    isDictating = true;
+                    recognition.start();
+                    dictateButton.classList.add('animate-pulse', 'bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
+                    dictateButton.classList.remove('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-500/10', 'dark:text-indigo-400');
+                }
+            });
+        } else {
+            dictateButton.classList.add('hidden');
+        }
 
         messagesContainer.addEventListener('click', async (event) => {
             const copyButton = event.target.closest('[data-copy-message]');
