@@ -13,6 +13,15 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/chats/{chat}', [\App\Http\Controllers\ChatController::class, 'show'])->name('chats.show');
+    Route::patch('/chats/{chat}', [\App\Http\Controllers\ChatController::class, 'update'])->name('chats.update');
+    Route::delete('/chats/{chat}', [\App\Http\Controllers\ChatController::class, 'destroy'])->name('chats.destroy');
+
+    Route::post('/chat/send', [\App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
+    Route::get('/chat/stream/{chat}/{message}', [\App\Http\Controllers\MessageController::class, 'stream'])->name('messages.stream');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
