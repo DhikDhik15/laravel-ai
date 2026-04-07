@@ -20,9 +20,7 @@ class Message extends Model
         'files' => 'array',
     ];
 
-    protected $hidden = ['created_at', 'updated_at'];
-
-    protected $with = ['chat'];
+    protected $hidden = ['updated_at'];
 
     
     public function chat()

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad9539a557a98391068923f3a93445fe",
+    "content-hash": "711a14c7cbff4ecb5899c41460f306b5",
     "packages": [
         {
             "name": "brick/math",
@@ -2326,6 +2326,41 @@
                 }
             ],
             "time": "2026-01-02T08:56:05+00:00"
+        },
+        {
+            "name": "msi/laravel-ai-workspace",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/laravel-ai-workspace",
+                "reference": "ae633703f693b8ceeef131cf69ec180386274ddf"
+            },
+            "require": {
+                "laravel/ai": "^0.4.2",
+                "laravel/framework": "^13.0",
+                "php": "^8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "AiWorkspace\\AiWorkspaceServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AiWorkspace\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Reusable AI chat workspace package for Laravel applications.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
         },
         {
             "name": "nesbot/carbon",
@@ -8569,12 +8604,14 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "msi/laravel-ai-workspace": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.3"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

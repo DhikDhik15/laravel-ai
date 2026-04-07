@@ -1,0 +1,23 @@
+{
+    "name": "msi/laravel-ai-workspace",
+    "description": "Reusable AI chat workspace package for Laravel applications.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^13.0",
+        "laravel/ai": "^0.4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "AiWorkspace\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AiWorkspace\\AiWorkspaceServiceProvider"
+            ]
+        }
+    }
+}

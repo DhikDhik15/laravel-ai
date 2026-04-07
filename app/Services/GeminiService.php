@@ -2,84 +2,135 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Log;
-use Laravel\Ai\Enums\Lab;
-use Laravel\Ai\Messages\Message;
+use AiWorkspace\Contracts\StreamsChatResponses;
 use App\Ai\Agents\SupportAgent;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Laravel\Ai\Files\Base64Image;
+use Laravel\Ai\Messages\AssistantMessage;
+use Laravel\Ai\Messages\UserMessage;
+use Laravel\Ai\Responses\StreamableAgentResponse;
 
-class GeminiService
+class GeminiService implements StreamsChatResponses
 {
-    /**
-     * Generate response from Gemini using SupportAgent.
-     *
-     * @param  \App\Models\Chat  $chat
-     * @return string
-     * @throws \Throwable
-     */
-    /**
-     * Generate response from Gemini using SupportAgent.
-     *
-     * @param  \App\Models\Chat  $chat
-     * @return string
-     * @throws \Throwable
-     */
-    public function generate($chat): string
+    public function generate(Model $chat): string
     {
         try {
-            // Get message history in order
             $messages = $chat->messages()->orderBy('created_at', 'asc')->get();
 
             if ($messages->isEmpty()) {
                 throw new \InvalidArgumentException('No messages available in this chat.');
             }
 
-            // Extract the latest user message
             $lastMessage = $messages->pop();
-            
-            // Map previous messages to history using specific AI Message classes
-            $history = $messages->map(function($msg) {
+
+            $history = $messages->map(function ($msg) {
                 if ($msg->role === 'assistant') {
-                    return new \Laravel\Ai\Messages\AssistantMessage($msg->content);
+                    return new AssistantMessage($msg->content);
                 }
-                
+
                 return $this->createUserMessage($msg);
             })->toArray();
 
-            // Create the prompt message (latest message)
             $promptMessage = $this->createUserMessage($lastMessage);
 
-            // Use SupportAgent with history
             $agent = new SupportAgent($history);
-            
-            // prompt() with text and detected attachments
             $response = $agent->prompt($promptMessage->content, $promptMessage->attachments->all());
 
-            return (string) $response;
-
+            return trim((string) $response);
         } catch (\Throwable $e) {
             Log::error('Gemini API Error', [
                 'chat_id' => $chat->id ?? 'unknown',
                 'message' => $e->getMessage(),
-                'trace'   => $e->getTraceAsString(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
         }
     }
 
-    /**
-     * Create a UserMessage, using the 'files' column for attachments.
-     */
-    protected function createUserMessage($msg): \Laravel\Ai\Messages\UserMessage
+    public function stream(Model $chat, ?int $messageId = null): StreamableAgentResponse
+    {
+        try {
+            [$history, $promptMessage] = $this->buildConversation($chat, $messageId);
+
+            $agent = new SupportAgent($history);
+
+            return $agent->stream($promptMessage->content, $promptMessage->attachments->all());
+        } catch (\Throwable $e) {
+            Log::error('Gemini API Stream Error', [
+                'chat_id' => $chat->id ?? 'unknown',
+                'message_id' => $messageId,
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    protected function buildConversation(Model $chat, ?int $messageId = null): array
+    {
+        $messages = $chat->messages()->orderBy('created_at', 'asc')->get();
+
+        if ($messages->isEmpty()) {
+            throw new \InvalidArgumentException('No messages available in this chat.');
+        }
+
+        $promptSource = $messageId
+            ? $messages->firstWhere('id', $messageId)
+            : $messages->last();
+
+        if (! $promptSource) {
+            throw new \InvalidArgumentException('Prompt message was not found.');
+        }
+
+        $historyMessages = $messages->filter(fn ($message) => $message->id !== $promptSource->id)->values();
+
+        $history = $historyMessages->map(function ($msg) {
+            if ($msg->role === 'assistant') {
+                return new AssistantMessage($msg->content);
+            }
+
+            return $this->createUserMessage($msg);
+        })->toArray();
+
+        return [$history, $this->createUserMessage($promptSource)];
+    }
+
+    protected function createUserMessage($msg): UserMessage
     {
         $attachments = [];
+        $documentContext = [];
 
-        if (!empty($msg->files) && is_array($msg->files)) {
-            foreach ($msg->files as $base64) {
-                $attachments[] = new \Laravel\Ai\Files\Base64Image($base64, 'image/jpeg');
+        if (! empty($msg->files) && is_array($msg->files)) {
+            foreach ($msg->files as $file) {
+                if (is_string($file)) {
+                    $attachments[] = new Base64Image($file, 'image/jpeg');
+                    continue;
+                }
+
+                if (! is_array($file)) {
+                    continue;
+                }
+
+                if (($file['type'] ?? null) === 'image' && ! empty($file['base64'])) {
+                    $attachments[] = new Base64Image($file['base64'], $file['mime'] ?? 'image/jpeg');
+                }
+
+                if (($file['type'] ?? null) === 'document' && ! empty($file['text_content'])) {
+                    $documentContext[] = "Dokumen {$file['name']}:\n" . $file['text_content'];
+                }
             }
         }
 
-        return new \Laravel\Ai\Messages\UserMessage($msg->content ?? '', $attachments);
+        $content = trim((string) ($msg->content ?? ''));
+
+        if ($documentContext !== []) {
+            $content .= "\n\nKonteks dokumen:\n" . implode("\n\n", $documentContext);
+        }
+
+        return new UserMessage(Str::of($content)->trim()->toString(), $attachments);
     }
 }
