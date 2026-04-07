@@ -59,7 +59,7 @@ class MessageController extends Controller
         ]);
     }
 
-    public function stream(Request $request, Chat $chat, Message $message): Response
+    public function stream(Request $request, Chat $chat, Message $message): \Symfony\Component\HttpFoundation\StreamedResponse
     {
         abort_unless($chat->user_id === $request->user()->id, 404);
         abort_unless($message->chat_id === $chat->id && $message->role === 'user', 404);
@@ -98,6 +98,7 @@ class MessageController extends Controller
                     }
                 }
             } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('SSE Stream Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
                 echo "event: error\n";
                 echo 'data: ' . json_encode(['message' => $e->getMessage()]) . "\n\n";
                 @ob_flush();
