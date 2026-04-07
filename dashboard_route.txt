@@ -1,0 +1,9 @@
+
+  GET|HEAD       admin admin.dashboard › AdminController@index
+                 ⇂ web
+                 ⇂ Illuminate\Auth\Middleware\Authenticate
+  GET|HEAD       dashboard dashboard › AiWorkspace\Http › DashboardController
+                 ⇂ Illuminate\Auth\Middleware\Authenticate
+
+                        Showing [2] routes
+
