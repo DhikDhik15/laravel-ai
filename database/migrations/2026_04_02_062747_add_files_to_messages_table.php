@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (! Schema::hasTable('messages') || Schema::hasColumn('messages', 'files')) {
+            return;
+        }
+
         Schema::table('messages', function (Blueprint $table) {
             $table->json('files')->nullable()->after('content');
         });

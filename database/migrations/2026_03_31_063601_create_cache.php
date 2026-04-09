@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('cache')) {
+            return;
+        }
+
         Schema::create('cache', function (Blueprint $table) {
             $table->id();
             $table->string('key')->index();

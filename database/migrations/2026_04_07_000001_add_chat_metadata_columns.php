@@ -8,9 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasTable('chats')) {
+            return;
+        }
+
         Schema::table('chats', function (Blueprint $table) {
-            $table->text('summary')->nullable()->after('title');
-            $table->timestamp('last_message_at')->nullable()->after('summary')->index();
+            if (! Schema::hasColumn('chats', 'summary')) {
+                $table->text('summary')->nullable()->after('title');
+            }
+
+            if (! Schema::hasColumn('chats', 'last_message_at')) {
+                $table->timestamp('last_message_at')->nullable()->after('summary')->index();
+            }
         });
     }
 
