@@ -1,88 +1,72 @@
-# Laravel AI Workspace Package (`msi/laravel-ai-workspace`)
+# Laravel AI Workspace (`msi/laravel-ai-workspace`)
 
-Paket ini adalah modul mandiri *(standalone package)* yang menyediakan fitur antarmuka *(interface)* percakapan AI lengkap dengan penyimpanan riwayat, dukungan lampiran multimedia (gambar, audio, video, & dokumen), serta *streaming* respons secara *real-time* menggunakan Server-Sent Events (SSE).
+Reusable Laravel package for AI chat workspace with persistent history, file attachments, and SSE streaming responses.
 
-Project ini dirancang agar bersifat *reusable* sehingga sangat mudah diintegrasikan ke dalam berbagai proyek Laravel.
+## Features
+- Chat history with title and summary metadata
+- Attachments for image, audio, video, and text documents
+- Streaming AI responses via Server-Sent Events (SSE)
+- Blade UI that can be published and customized
+- Configurable models and responder implementation
 
-## ✨ Fitur Utama
-- **Multimedia Support**: Unggah dan kirim file gambar, audio, video, serta dokumen (txt, md, dsb) sebagai konteks ke AI.
-- **Real-time Streaming**: Respons AI dikirim secara bertahap menggunakan SSE untuk pengalaman pengguna yang lebih responsif.
-- **Chat Management**: Manajemen riwayat chat otomatis (buat baru, ambil riwayat, hapus, dan ringkasan judul otomatis).
-- **Auto-Routing**: Rute dashboard dan API chat sudah tersedia secara bawaan dan dapat dikonfigurasi.
-- **Customizable UI**: View Blade yang siap pakai dan dapat di-*publish* untuk kustomisasi tampilan.
+## Requirements
+- PHP `^8.3`
+- Laravel `^13.0`
+- `laravel/ai` `^0.4.2`
 
-## 📦 Kebutuhan Sistem
-- **PHP** `^8.3`
-- **Laravel Framework** `^13.0`
-- **Laravel AI** (`laravel/ai`) `^0.4.2`
+## Install in Another Laravel App
 
-## 🚀 Instalasi
+1. Require package
 
-### 1. Tambahkan Package
-Karena paket ini berada dalam direktori lokal, tambahkan konfigurasi *path repository* pada `composer.json` proyek Anda:
-
-```json
-"repositories": [
-    {
-        "type": "path",
-        "url": "packages/laravel-ai-workspace",
-        "options": { "symlink": true }
-    }
-]
-```
-
-Lalu jalankan:
 ```bash
-composer require msi/laravel-ai-workspace:*@dev
+composer require msi/laravel-ai-workspace
 ```
 
-### 2. Jalankan Perintah Instalasi
-Paket ini menyediakan perintah automasi untuk mempublikasikan konfigurasi, migrasi, dan aset yang diperlukan:
+2. Publish resources
 
 ```bash
 php artisan ai-workspace:install
 ```
 
-### 3. Jalankan Migrasi Database
-Siapkan tabel untuk menyimpan riwayat chat dan pesan:
+Optional install variants:
+
 ```bash
-php artisan migrate
+php artisan ai-workspace:install --migrate
+php artisan ai-workspace:install --force
+php artisan ai-workspace:install --without-views
 ```
 
-## 🛠️ Konfigurasi
-
-Setelah menjalankan `install`, file konfigurasi akan tersedia di `config/ai-workspace.php`. Berikut adalah beberapa opsi utama yang dapat Anda sesuaikan melalui `.env`:
-
-| Key | Environment Variable | Default | Deskripsi |
-|-----|----------------------|---------|-----------|
-| `route_enabled` | `AI_WORKSPACE_ROUTE_ENABLED` | `true` | Mengaktifkan rute bawaan package. |
-| `route_path` | `AI_WORKSPACE_ROUTE_PATH` | `/dashboard` | URL utama untuk antarmuka chat. |
-| `disk` | `AI_WORKSPACE_DISK` | `public` | Disk penyimpanan untuk file unggahan. |
-| `upload_path` | `AI_WORKSPACE_UPLOAD_PATH` | `uploads/chats` | Direktori penyimpanan file. |
-| `max_file_kb` | `AI_WORKSPACE_MAX_FILE_KB` | `10240` | Batas ukuran file per ungguhan (10MB). |
-
-### Hubungkan dengan AI Service
-Pastikan Anda mengatur `ai_responder` di `config/ai-workspace.php` ke kelas yang mengimplementasikan `AiWorkspace\Contracts\StreamsChatResponses`. Secara default, ini mengarah ke `App\Services\GeminiService`.
+3. Configure responder and models in `config/ai-workspace.php`
 
 ```php
+'models' => [
+    'chat' => App\Models\Chat::class,
+    'message' => App\Models\Message::class,
+],
+
 'ai_responder' => App\Services\GeminiService::class,
 ```
 
-## 🖥️ Penggunaan
+## Route Configuration
 
-### Rute Bawaan
-Jika `route_enabled` bernilai `true`, rute berikut akan otomatis tersedia (dilindungi oleh middleware `auth` secara default):
-- `GET /dashboard` (atau sesuai `route_path`) -> Menampilkan interface chat.
-- `POST /chat/send` -> Mengirim pesan dan file.
-- `GET /chat/stream/{chat}/{message}` -> Endpoint streaming SSE.
-- `GET/PATCH/DELETE /chats/{chat}` -> Manajemen resource chat.
-
-### Kustomisasi Tampilan
-Jika Anda ingin mengubah tampilan antarmuka chat, publish views milik package:
-```bash
-php artisan vendor:publish --tag=ai-workspace-views
+```php
+'route_enabled' => true,
+'route_path' => '/dashboard',
+'route_prefix' => '',
+'route_name_prefix' => '',
+'route_middleware' => ['auth'],
 ```
-File view akan tersedia di `resources/views/vendor/ai-workspace/`.
 
----
-Selamat membangun! Project *AI Workspace* Anda sekarang siap mendukung interaksi AI yang lebih kaya dan interaktif.
+Tips:
+- Use `route_prefix` if host app already has `/chat/*` routes.
+- Use `route_name_prefix` if host app already has route names like `dashboard` or `messages.send`.
+
+## Migration Safety
+Package migrations are idempotent for `chats` and `messages` table creation. If the table already exists, migration will skip creation.
+
+## Development Roadmap
+1. Add automated tests for install command and route prefixed mode.
+2. Add provider adapters (Gemini/OpenAI/Anthropic) via one responder interface.
+3. Add event hooks (message_sent, stream_started, stream_finished).
+4. Add authorization policy hooks for chat/message actions.
+5. Prepare semantic versioning and release notes for Packagist distribution.

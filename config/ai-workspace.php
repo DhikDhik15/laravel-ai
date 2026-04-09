@@ -14,6 +14,10 @@ return [
 
     'max_file_kb' => (int) env('AI_WORKSPACE_MAX_FILE_KB', 10240),
 
+    'stream_retry_attempts' => (int) env('AI_WORKSPACE_STREAM_RETRY_ATTEMPTS', 2),
+
+    'stream_retry_delay_ms' => (int) env('AI_WORKSPACE_STREAM_RETRY_DELAY_MS', 700),
+
     'document_extensions' => ['txt', 'md', 'csv', 'json', 'log', 'xml'],
 
     'document_context_limit' => (int) env('AI_WORKSPACE_DOCUMENT_LIMIT', 12000),

@@ -500,6 +500,15 @@
                     setStatus('loading', 'Sedang menerima jawaban AI secara real-time...');
                 });
 
+                source.addEventListener('status', (event) => {
+                    try {
+                        const payload = JSON.parse(event.data);
+                        setStatus('loading', payload.message || 'Mencoba menghubungkan ulang ke layanan AI...');
+                    } catch (_) {
+                        setStatus('loading', 'Mencoba menghubungkan ulang ke layanan AI...');
+                    }
+                });
+
                 source.addEventListener('done', (event) => {
                     const payload = JSON.parse(event.data);
                     draft.content = payload.assistant_message.content;

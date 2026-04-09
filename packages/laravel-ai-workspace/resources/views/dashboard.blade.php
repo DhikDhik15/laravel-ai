@@ -71,7 +71,7 @@
         </div>
     </x-slot>
 
-    <div class="dash-shell px-4 py-4 sm:px-6 lg:px-8" data-dashboard data-chats='@json($chats)' data-chat='@json($selectedChat)' data-chat-id='@json($selectedChatId)' data-admin='@json($adminStatsUrl)'>
+    <div class="dash-shell px-4 py-4 sm:px-6 lg:px-8" data-dashboard data-chats='@json($chats)' data-chat='@json($selectedChat)' data-chat-id='@json($selectedChatId)' data-admin='@json($adminStatsUrl)' data-routes='@json($workspaceRoutes)'>
         <div class="mb-4 flex items-center justify-between gap-3 lg:hidden">
             <button type="button" id="open-history-button" class="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                 Buka Riwayat
@@ -171,6 +171,7 @@
         const chatsData = JSON.parse(dashboardEl.dataset.chats || '[]');
         const selectedData = JSON.parse(dashboardEl.dataset.chat || 'null');
         const selectedId = JSON.parse(dashboardEl.dataset.chatId || 'null');
+        const workspaceRoutes = JSON.parse(dashboardEl.dataset.routes || '{}');
         const csrf = document.querySelector('input[name="_token"]').value;
 
         const historyList = document.getElementById('history-list');
@@ -202,6 +203,12 @@
 
         const esc = (v) => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
         const fmt = (v) => v ? new Intl.DateTimeFormat('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(v)) : 'Baru';
+        const workspaceUrl = (routeKey, chatId = null) => {
+            const template = workspaceRoutes[routeKey] || '';
+            if (!template) return '';
+            if (chatId === null || chatId === undefined) return template;
+            return template.replace('__CHAT__', encodeURIComponent(chatId));
+        };
 
         function markdownToHtml(text = '') {
             const normalized = String(text ?? '').replace(/\r\n/g, '\n').trim();
@@ -416,7 +423,7 @@
         async function loadChat(id) {
             selectingChatId = id;
             showHistoryLoading(true);
-            const res = await fetch(`/chats/${id}`, { headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
+            const res = await fetch(workspaceUrl('chat_show', id), { headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
             if (!res.ok) throw new Error('Gagal memuat chat.');
             return res.json();
         }
@@ -438,7 +445,7 @@
             const item = chats.find((c) => c.id === id);
             const title = prompt('Masukkan judul baru:', item?.title || '');
             if (!title) return;
-            const res = await fetch(`/chats/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':csrf,Accept:'application/json'}, body: JSON.stringify({ title }) });
+            const res = await fetch(workspaceUrl('chat_update', id), { method:'PATCH', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':csrf,Accept:'application/json'}, body: JSON.stringify({ title }) });
             if (!res.ok) return window.appToast?.('Gagal rename chat.', 'error');
             const data = await res.json();
             chats = chats.map((c) => c.id === id ? { ...c, ...data.chat } : c);
@@ -449,7 +456,7 @@
 
         window.deleteChat = async (id) => {
             if (!confirm('Hapus percakapan ini?')) return;
-            const res = await fetch(`/chats/${id}`, { method:'DELETE', headers:{'X-CSRF-TOKEN':csrf,Accept:'application/json'} });
+            const res = await fetch(workspaceUrl('chat_delete', id), { method:'DELETE', headers:{'X-CSRF-TOKEN':csrf,Accept:'application/json'} });
             if (!res.ok) return window.appToast?.('Gagal menghapus chat.', 'error');
             chats = chats.filter((c) => c.id !== id);
             if (chatId === id) { chatId = null; currentChat = null; setHero(null); renderMessages([]); }
@@ -472,7 +479,7 @@
             fd.append('message', message || '');
             files.forEach((file) => fd.append('files[]', file));
 
-            const res = await fetch('/chat/send', { method:'POST', headers:{'X-CSRF-TOKEN':csrf,Accept:'application/json'}, body:fd });
+            const res = await fetch(workspaceUrl('send'), { method:'POST', headers:{'X-CSRF-TOKEN':csrf,Accept:'application/json'}, body:fd });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Gagal mengirim pesan.');
 
@@ -503,6 +510,15 @@
                     draft.html = markdownToHtml(draft.content);
                     renderMessages(msgs);
                     setStatus('loading', 'Sedang menerima jawaban AI secara real-time...');
+                });
+
+                source.addEventListener('status', (event) => {
+                    try {
+                        const payload = JSON.parse(event.data);
+                        setStatus('loading', payload.message || 'Mencoba menghubungkan ulang ke layanan AI...');
+                    } catch (_) {
+                        setStatus('loading', 'Mencoba menghubungkan ulang ke layanan AI...');
+                    }
                 });
 
                 source.addEventListener('done', (event) => {
@@ -652,7 +668,5 @@
         renderMessages((selectedData?.messages || []).map((m) => ({ ...m, html: m.role === 'assistant' ? markdownToHtml(m.content || '') : undefined })));
     </script>
 </x-app-layout>
-
-
 
 

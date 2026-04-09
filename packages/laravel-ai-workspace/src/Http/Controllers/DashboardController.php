@@ -46,6 +46,17 @@ class DashboardController
             'selectedChat' => $selectedChat,
             'selectedChatId' => $selectedChatId,
             'adminStatsUrl' => method_exists($user, 'canAccessAdmin') && $user->canAccessAdmin() ? route('admin.dashboard') : null,
+            'workspaceRoutes' => [
+                'send' => route($this->routeName('messages.send')),
+                'chat_show' => route($this->routeName('chats.show'), ['chat' => '__CHAT__']),
+                'chat_update' => route($this->routeName('chats.update'), ['chat' => '__CHAT__']),
+                'chat_delete' => route($this->routeName('chats.destroy'), ['chat' => '__CHAT__']),
+            ],
         ]);
+    }
+
+    private function routeName(string $name): string
+    {
+        return (string) config('ai-workspace.route_name_prefix', '') . $name;
     }
 }
