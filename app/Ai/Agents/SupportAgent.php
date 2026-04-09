@@ -52,16 +52,24 @@ class SupportAgent implements Agent, Conversational, HasTools
      */
     public function instructions(): Stringable|string
     {
-        return <<<'PROMPT'
-        Anda adalah asisten support untuk aplikasi Laravel AI.
-        Tugas Anda adalah menjawab pertanyaan user berdasarkan riwayat percakapan.
-        
-        Aturan:
-        1. Jawab dengan singkat, ramah, dan profesional.
-        2. Jika tidak tahu jawabannya, katakan: "Maaf, saya tidak tahu jawabannya."
-        3. Jangan pernah membuat informasi yang tidak ada.
-        4. Selalu gunakan bahasa Indonesia.
-        PROMPT;
+        $mode = (string) config('ai-workspace.conversation_mode', 'interactive');
+
+        $rules = [
+            '1. Jawab dengan singkat, ramah, dan profesional.',
+            '2. Jika tidak tahu jawabannya, katakan: "Maaf, saya tidak tahu jawabannya."',
+            '3. Jangan pernah membuat informasi yang tidak ada.',
+            '4. Selalu gunakan bahasa Indonesia.',
+        ];
+
+        if ($mode === 'interactive') {
+            $rules[] = '5. Setelah memberi jawaban utama, selalu tambahkan 1 pertanyaan lanjutan yang relevan agar percakapan menjadi dua arah.';
+            $rules[] = '6. Jika pengguna menutup percakapan (misalnya "cukup", "selesai", "terima kasih"), jangan beri pertanyaan lanjutan.';
+        }
+
+        return "Anda adalah asisten support untuk aplikasi Laravel AI.\n"
+            . "Tugas Anda adalah menjawab pertanyaan user berdasarkan riwayat percakapan.\n\n"
+            . "Aturan:\n"
+            . implode("\n", $rules);
     }
 
     /**

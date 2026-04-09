@@ -18,6 +18,8 @@ return [
 
     'stream_retry_delay_ms' => (int) env('AI_WORKSPACE_STREAM_RETRY_DELAY_MS', 700),
 
+    'conversation_mode' => env('AI_WORKSPACE_CONVERSATION_MODE', 'interactive'),
+
     'document_extensions' => ['txt', 'md', 'csv', 'json', 'log', 'xml'],
 
     'document_context_limit' => (int) env('AI_WORKSPACE_DOCUMENT_LIMIT', 12000),
