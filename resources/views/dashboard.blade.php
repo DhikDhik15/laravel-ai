@@ -27,6 +27,81 @@
         .dash-markdown th { background: rgba(148,163,184,.08); font-weight: 600; }
         .dash-markdown code:not(pre code) { border-radius: .5rem; background: rgba(148,163,184,.10); padding: .15rem .4rem; font-size: .92em; }
         .dash-markdown pre { overflow: auto; border-radius: 1rem; background: rgba(15,23,42,.92); padding: 1rem; color: #e2e8f0; margin-top: .85rem; }
+        .dash-input-shell { border-radius: 28px; padding: 8px; }
+        .dash-input-bar {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            border-radius: 999px;
+            padding: .6rem .75rem;
+            background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+            border: 1px solid #d8e0ea;
+            box-shadow: 0 10px 30px -22px rgba(15, 23, 42, .35);
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .dash-input-bar:focus-within {
+            border-color: #d8e0ea;
+            box-shadow: 0 10px 30px -22px rgba(15, 23, 42, .35);
+        }
+        html.dark .dash-input-bar {
+            background: linear-gradient(90deg, #252525 0%, #343434 100%);
+            border: 1px solid rgba(255,255,255,.08);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+        }
+        html.dark .dash-input-bar:focus-within {
+            border-color: rgba(255,255,255,.08);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+        }
+        .dash-icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s ease;
+        }
+        .dash-icon-btn.plus-btn { background: #e4eaf3; color: #334155; }
+        .dash-icon-btn.plus-btn:hover { background: #d8e2ee; }
+        html.dark .dash-icon-btn.plus-btn { background: rgba(255,255,255,.09); color: #f2f2f2; }
+        html.dark .dash-icon-btn.plus-btn:hover { background: rgba(255,255,255,.16); }
+        .dash-icon-btn.mic-btn { background: transparent; color: #526075; }
+        .dash-icon-btn.mic-btn:hover { background: rgba(100,116,139,.14); color: #1e293b; }
+        html.dark .dash-icon-btn.mic-btn { color: #f0f0f0; }
+        html.dark .dash-icon-btn.mic-btn:hover { background: rgba(255,255,255,.10); color: #fff; }
+        .dash-icon-btn.is-active { color: #0891b2 !important; background: rgba(8,145,178,.14); }
+        .dash-send-orb {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, #0e7490 0%, #0369a1 100%);
+            color: #f8fafc;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s ease;
+            box-shadow: 0 10px 18px -12px rgba(3, 105, 161, .8);
+        }
+        .dash-send-orb:hover { transform: translateY(-1px) scale(1.03); }
+        .dash-send-orb:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+        .dash-message-input {
+            flex: 1;
+            min-height: 34px;
+            max-height: 120px;
+            resize: none;
+            border: none;
+            background: transparent;
+            color: #0f172a;
+            padding: .35rem .2rem;
+            font-size: .98rem;
+            line-height: 1.45rem;
+        }
+        html.dark .dash-message-input { color: #f8fafc; }
+        .dash-message-input::placeholder { color: #7c8ca3; }
+        html.dark .dash-message-input::placeholder { color: #b8b8b8; }
+        .dash-message-input:focus { outline: none; }
         .dash-status { display:flex; align-items:center; gap:.55rem; border-radius:1rem; padding:.8rem 1rem; font-size:.85rem; }
         .dash-status.loading { background: rgba(8,145,178,.08); color:#0f766e; }
         .dash-status.error { background: rgba(244,63,94,.10); color:#be123c; }
@@ -134,26 +209,28 @@
                 </div>
 
                 <div class="pt-4">
-                    <form id="chat-form" class="dash-form rounded-[28px] p-3 shadow-[0_20px_60px_-40px_rgba(15,23,42,.35)]" enctype="multipart/form-data">
+                    <form id="chat-form" class="dash-form dash-input-shell shadow-[0_20px_60px_-40px_rgba(15,23,42,.35)]" enctype="multipart/form-data">
                         @csrf
                         <div class="space-y-3">
                             <div id="preview-container" class="hidden flex-wrap gap-2 px-1 pt-1"></div>
-                            <div class="flex items-end gap-3">
-                                <label for="file-input" class="flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white" title="Unggah File">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656L5.757 10.757a6 6 0 108.486 8.486L20.5 13" /></svg>
+                            <div class="dash-input-bar">
+                                <label for="file-input" class="dash-icon-btn plus-btn cursor-pointer" title="Unggah File">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.15" d="M12 5.25v13.5M5.25 12h13.5" />
+                                    </svg>
                                 </label>
                                 <input type="file" id="file-input" class="hidden" accept="image/*,video/*,audio/*,.txt,.md,.csv,.json,.xml,.log" multiple>
-                                <button type="button" id="record-button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-rose-50 text-rose-500 transition hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20" title="Rekam Suara">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+                                <textarea id="message" rows="1" placeholder="Ask anything" class="dash-message-input"></textarea>
+                                <button type="button" id="dictate-button" class="dash-icon-btn mic-btn" title="Dikte (Voice-to-Text)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3.75a3.25 3.25 0 00-3.25 3.25v3.75a3.25 3.25 0 106.5 0V7A3.25 3.25 0 0012 3.75z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 10.5a5.25 5.25 0 1010.5 0M12 15.75v3m-3 0h6" />
+                                    </svg>
                                 </button>
-                                <button type="button" id="dictate-button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 transition hover:bg-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-400 dark:hover:bg-indigo-500/20" title="Dikte (Voice-to-Text)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8m-8 4h6" /></svg>
-                                </button>
-                                <div class="min-w-0 flex-1 rounded-[24px] bg-slate-100 p-2 dark:bg-slate-800">
-                                    <textarea id="message" rows="1" placeholder="Tulis pesan, unggah dokumen, lalu kirim..." class="max-h-40 min-h-[48px] w-full resize-none border-none bg-transparent px-2 py-2 text-sm leading-7 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0 dark:text-slate-100 dark:placeholder:text-slate-500"></textarea>
-                                </div>
-                                <button type="submit" id="send-button" class="min-w-[110px] rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-18px_rgba(8,145,178,.9)] transition hover:-translate-y-0.5 hover:brightness-105 disabled:cursor-not-allowed disabled:brightness-90" style="background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%); color:#fff; border:none;">
-                                    Kirim
+                                <button type="submit" id="send-button" class="dash-send-orb" title="Kirim">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M3.83 20.24a1 1 0 001.39 1.16l15.5-8.37a1.15 1.15 0 000-2.06L5.22 2.6a1 1 0 00-1.39 1.16l2.03 6.79a1 1 0 00.95.71h6.24a.75.75 0 010 1.5H6.81a1 1 0 00-.95.71l-2.03 6.78z" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -594,45 +671,43 @@
         let audioChunks = [];
         let isRecording = false;
 
-        recordButton.addEventListener('click', async () => {
-            if (isRecording) {
-                mediaRecorder.stop();
-                return;
-            }
+        if (recordButton) {
+            recordButton.addEventListener('click', async () => {
+                if (isRecording) {
+                    mediaRecorder.stop();
+                    return;
+                }
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/ogg', 'audio/wav'];
-                const supportedMime = mimeTypes.find(type => MediaRecorder.isTypeSupported(type)) || 'audio/webm';
-                
-                mediaRecorder = new MediaRecorder(stream, { mimeType: supportedMime });
-
-                mediaRecorder.addEventListener('dataavailable', event => {
-                    if (event.data.size > 0) audioChunks.push(event.data);
-                });
-
-                mediaRecorder.addEventListener('stop', () => {
-                    stream.getTracks().forEach(track => track.stop());
-                    const audioBlob = new Blob(audioChunks, { type: supportedMime });
-                    const extension = supportedMime.includes('ogg') ? '.ogg' : '.webm';
-                    const audioFile = new File([audioBlob], `Voice_Note_${new Date().getTime()}${extension}`, { type: supportedMime });
-                    selectedFiles.push(audioFile);
-                    renderPreview();
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/ogg', 'audio/wav'];
+                    const supportedMime = mimeTypes.find(type => MediaRecorder.isTypeSupported(type)) || 'audio/webm';
                     
-                    isRecording = false;
-                    recordButton.classList.remove('animate-pulse', 'bg-rose-500', 'text-white');
-                    recordButton.classList.add('bg-rose-50', 'text-rose-500', 'dark:bg-rose-500/10', 'dark:text-rose-400');
-                });
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: supportedMime });
 
-                audioChunks = [];
-                mediaRecorder.start();
-                isRecording = true;
-                recordButton.classList.add('animate-pulse', 'bg-rose-500', 'text-white', 'hover:bg-rose-600');
-                recordButton.classList.remove('bg-rose-50', 'text-rose-500', 'dark:bg-rose-500/10', 'dark:text-rose-400');
-            } catch (e) {
-                window.appToast?.('Gagal mengakses mikropon. Pastikan izin telah diberikan.', 'error');
-            }
-        });
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        if (event.data.size > 0) audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        stream.getTracks().forEach(track => track.stop());
+                        const audioBlob = new Blob(audioChunks, { type: supportedMime });
+                        const extension = supportedMime.includes('ogg') ? '.ogg' : '.webm';
+                        const audioFile = new File([audioBlob], `Voice_Note_${new Date().getTime()}${extension}`, { type: supportedMime });
+                        selectedFiles.push(audioFile);
+                        renderPreview();
+                        
+                        isRecording = false;
+                    });
+
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    isRecording = true;
+                } catch (e) {
+                    window.appToast?.('Gagal mengakses mikropon. Pastikan izin telah diberikan.', 'error');
+                }
+            });
+        }
 
         const dictateButton = document.getElementById('dictate-button');
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -681,8 +756,7 @@
             function stopDictation() {
                 isDictating = false;
                 recognition.stop();
-                dictateButton.classList.remove('animate-pulse', 'bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
-                dictateButton.classList.add('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-500/10', 'dark:text-indigo-400');
+                dictateButton.classList.remove('animate-pulse', 'is-active');
             }
 
             dictateButton.addEventListener('click', () => {
@@ -691,8 +765,7 @@
                 } else {
                     isDictating = true;
                     recognition.start();
-                    dictateButton.classList.add('animate-pulse', 'bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
-                    dictateButton.classList.remove('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-500/10', 'dark:text-indigo-400');
+                    dictateButton.classList.add('animate-pulse', 'is-active');
                 }
             });
         } else {
@@ -753,7 +826,7 @@
             previewContainer.innerHTML = '';
             previewContainer.classList.add('hidden');
             sendButton.disabled = true;
-            sendButton.textContent = 'Mengirim...';
+            sendButton.classList.add('opacity-60');
 
             try {
                 await submitChatMessage(message, selectedFiles);
@@ -764,7 +837,7 @@
             } finally {
                 selectedFiles = [];
                 sendButton.disabled = false;
-                sendButton.textContent = 'Kirim';
+                sendButton.classList.remove('opacity-60');
             }
         });
 
