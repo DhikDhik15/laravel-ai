@@ -27,15 +27,101 @@
         .dash-markdown th { background: rgba(148,163,184,.08); font-weight: 600; }
         .dash-markdown code:not(pre code) { border-radius: .5rem; background: rgba(148,163,184,.10); padding: .15rem .4rem; font-size: .92em; }
         .dash-markdown pre { overflow: auto; border-radius: 1rem; background: rgba(15,23,42,.92); padding: 1rem; color: #e2e8f0; margin-top: .85rem; }
+        .dash-input-shell {
+            border-radius: 28px;
+            padding: 8px;
+            background: linear-gradient(180deg, #eef4fb 0%, #e6edf7 100%) !important;
+            border: 1px solid #d5e0ee !important;
+        }
+        html.dark .dash-input-shell {
+            background: linear-gradient(180deg, #061536 0%, #081739 100%) !important;
+            border: 1px solid rgba(62, 115, 193, .30) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 14px 32px -24px rgba(2, 8, 24, .95);
+        }
+        .dash-input-bar {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            border-radius: 999px;
+            padding: .6rem .75rem;
+            background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+            border: 1px solid #d8e0ea;
+            box-shadow: 0 10px 30px -22px rgba(15, 23, 42, .35);
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .dash-input-bar:focus-within {
+            border-color: #d8e0ea;
+            box-shadow: 0 10px 30px -22px rgba(15, 23, 42, .35);
+        }
+        html.dark .dash-input-bar {
+            background: linear-gradient(90deg, #272a31 0%, #3a3c44 100%);
+            border: 1px solid rgba(114, 149, 203, .22);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+        }
+        html.dark .dash-input-bar:focus-within {
+            border-color: rgba(77, 175, 216, .55);
+            box-shadow: 0 0 0 2px rgba(77, 175, 216, .16), inset 0 1px 0 rgba(255,255,255,.05);
+        }
+        .dash-icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s ease;
+        }
+        .dash-icon-btn.plus-btn { background: #e4eaf3; color: #334155; }
+        .dash-icon-btn.plus-btn:hover { background: #d8e2ee; }
+        html.dark .dash-icon-btn.plus-btn { background: rgba(255,255,255,.09); color: #f2f2f2; }
+        html.dark .dash-icon-btn.plus-btn:hover { background: rgba(255,255,255,.16); }
+        .dash-icon-btn.mic-btn { background: transparent; color: #526075; }
+        .dash-icon-btn.mic-btn:hover { background: rgba(100,116,139,.14); color: #1e293b; }
+        html.dark .dash-icon-btn.mic-btn { color: #f0f0f0; }
+        html.dark .dash-icon-btn.mic-btn:hover { background: rgba(255,255,255,.10); color: #fff; }
+        .dash-icon-btn.is-active { color: #0891b2 !important; background: rgba(8,145,178,.14); }
+        .dash-send-orb {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, #0e7490 0%, #0369a1 100%);
+            color: #f8fafc;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s ease;
+            box-shadow: 0 10px 18px -12px rgba(3, 105, 161, .8);
+        }
+        .dash-send-orb:hover { transform: translateY(-1px) scale(1.03); }
+        .dash-send-orb:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+        .dash-message-input {
+            flex: 1;
+            min-height: 34px;
+            max-height: 120px;
+            resize: none;
+            border: none;
+            background: transparent;
+            color: #0f172a;
+            padding: .35rem .2rem;
+            font-size: .98rem;
+            line-height: 1.45rem;
+            caret-color: #0f172a;
+        }
+        html.dark .dash-message-input {
+            color: #e7edf9;
+            caret-color: #8fd6ff;
+        }
+        .dash-message-input::placeholder { color: #7c8ca3; }
+        html.dark .dash-message-input::placeholder { color: #aab9d4; }
+        .dash-message-input:focus { outline: none; }
         .dash-status { display:flex; align-items:center; gap:.55rem; border-radius:1rem; padding:.8rem 1rem; font-size:.85rem; }
         .dash-status.loading { background: rgba(8,145,178,.08); color:#0f766e; }
         .dash-status.error { background: rgba(244,63,94,.10); color:#be123c; }
         html.dark .dash-status.loading { color:#67e8f9; background: rgba(8,145,178,.12); }
         html.dark .dash-status.error { color:#fda4af; background: rgba(244,63,94,.14); }
         .dash-mobile-drawer { transition: transform .25s ease, opacity .25s ease; }
-        .dash-loading-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; border-radius:28px; background:rgba(248,250,252,.78); backdrop-filter:blur(8px); z-index:15; }
-        html.dark .dash-loading-overlay { background:rgba(2,6,23,.72); }
-        .dash-loading-card { display:flex; align-items:center; gap:.85rem; padding:1rem 1.15rem; border-radius:1.25rem; background:var(--app-surface-strong); border:1px solid var(--app-border); color:var(--app-text); box-shadow:0 20px 50px -35px rgba(15,23,42,.4); }
         .dash-mobile-drawer.hidden-drawer { transform: translateX(-110%); opacity: 0; pointer-events: none; }
         @media (max-width: 1023px) {
             .dash-shell { height: auto; min-height: calc(100vh - 128px); }
@@ -132,31 +218,33 @@
                             </div>
                         </div>
                         <div id="stream-status"></div>
-                        <div id="history-loading" class="dash-loading-overlay hidden">
-                            <div class="dash-loading-card">
-                                <span class="typing"><span></span><span></span><span></span></span>
-                                <span class="text-sm font-medium">Memuat riwayat chat...</span>
-                            </div>
-                        </div>
                         <div id="messages-container" class="space-y-5"></div>
                     </div>
                 </div>
 
                 <div class="pt-4">
-                    <form id="chat-form" class="dash-form rounded-[28px] p-3 shadow-[0_20px_60px_-40px_rgba(15,23,42,.35)]" enctype="multipart/form-data">
+                    <form id="chat-form" class="dash-form dash-input-shell shadow-[0_20px_60px_-40px_rgba(15,23,42,.35)]" enctype="multipart/form-data">
                         @csrf
                         <div class="space-y-3">
                             <div id="preview-container" class="hidden flex-wrap gap-2 px-1 pt-1"></div>
-                            <div class="flex items-end gap-3">
-                                <label for="file-input" class="flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656L5.757 10.757a6 6 0 108.486 8.486L20.5 13" /></svg>
+                            <div class="dash-input-bar">
+                                <label for="file-input" class="dash-icon-btn plus-btn cursor-pointer" title="Unggah File">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.15" d="M12 5.25v13.5M5.25 12h13.5" />
+                                    </svg>
                                 </label>
                                 <input type="file" id="file-input" class="hidden" accept="image/*,video/*,audio/*,.txt,.md,.csv,.json,.xml,.log" multiple>
-                                <div class="min-w-0 flex-1 rounded-[24px] bg-slate-100 p-2 dark:bg-slate-800">
-                                    <textarea id="message" rows="1" placeholder="Tulis pesan, unggah dokumen, lalu kirim..." class="max-h-40 min-h-[48px] w-full resize-none border-none bg-transparent px-2 py-2 text-sm leading-7 text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-0 dark:text-slate-100 dark:placeholder:text-slate-500"></textarea>
-                                </div>
-                                <button type="submit" id="send-button" class="min-w-[110px] rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-18px_rgba(8,145,178,.9)] transition hover:-translate-y-0.5 hover:brightness-105 disabled:cursor-not-allowed disabled:brightness-90" style="background: linear-gradient(135deg, #0f172a 0%, #0891b2 100%); color:#fff; border:none;">
-                                    Kirim
+                                <textarea id="message" rows="1" placeholder="Ask anything" class="dash-message-input"></textarea>
+                                <button type="button" id="dictate-button" class="dash-icon-btn mic-btn" title="Dikte (Voice-to-Text)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3.75a3.25 3.25 0 00-3.25 3.25v3.75a3.25 3.25 0 106.5 0V7A3.25 3.25 0 0012 3.75z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 10.5a5.25 5.25 0 1010.5 0M12 15.75v3m-3 0h6" />
+                                    </svg>
+                                </button>
+                                <button type="submit" id="send-button" class="dash-send-orb" title="Kirim">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M3.83 20.24a1 1 0 001.39 1.16l15.5-8.37a1.15 1.15 0 000-2.06L5.22 2.6a1 1 0 00-1.39 1.16l2.03 6.79a1 1 0 00.95.71h6.24a.75.75 0 010 1.5H6.81a1 1 0 00-.95.71l-2.03 6.78z" />
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -185,7 +273,6 @@
         const historySidebar = document.getElementById('history-sidebar');
         const historyBackdrop = document.getElementById('history-backdrop');
         const streamStatus = document.getElementById('stream-status');
-        const historyLoading = document.getElementById('history-loading');
         const chatForm = document.getElementById('chat-form');
         const messageInput = document.getElementById('message');
         const fileInput = document.getElementById('file-input');
@@ -198,7 +285,6 @@
         let chatId = selectedId;
         let selectedFiles = [];
         let historyQuery = '';
-        let selectingChatId = null;
 
         const esc = (v) => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
         const fmt = (v) => v ? new Intl.DateTimeFormat('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(v)) : 'Baru';
@@ -252,16 +338,6 @@
             `;
         }
 
-        function showHistoryLoading(active = false) {
-            selectingChatId = active ? selectingChatId : null;
-            historyLoading?.classList.toggle('hidden', !active);
-        }
-
-        function showHistoryLoading(active = false) {
-            selectingChatId = active ? selectingChatId : null;
-            historyLoading?.classList.toggle('hidden', !active);
-        }
-
         function openSidebar() {
             historySidebar.classList.remove('hidden-drawer');
             historyBackdrop.classList.remove('hidden');
@@ -273,10 +349,23 @@
         }
 
         function attachmentCard(file) {
-            if ((file.type || file.mime || '').startsWith('image/')) {
-                return `<img src="${file.url}" alt="${esc(file.name)}" class="h-16 w-16 rounded-2xl object-cover shadow-sm">`;
+            const mime = (file.mime || file.type || '');
+            if (mime.startsWith('image/')) {
+                return `<a href="${file.url}" target="_blank" title="${esc(file.name)}"><img src="${file.url}" alt="${esc(file.name)}" class="h-20 w-20 rounded-xl object-cover shadow-sm border border-slate-200 dark:border-slate-700"></a>`;
             }
-            return `<div class="rounded-2xl bg-slate-100 px-3 py-2 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-200"><div class="font-semibold">${esc(file.name)}</div><div class="mt-1 dash-muted">${esc(file.mime || file.type || 'Lampiran')}</div></div>`;
+            if (mime.startsWith('video/')) {
+                return `<video src="${file.url}" controls class="h-28 w-auto rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 max-w-full" title="${esc(file.name)}"></video>`;
+            }
+            if (mime.startsWith('audio/')) {
+                return `<audio src="${file.url}" controls class="h-10 w-56 max-w-full rounded-full shadow-sm border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800" title="${esc(file.name)}"></audio>`;
+            }
+            return `<a href="${file.url}" target="_blank" class="rounded-2xl bg-white px-3 py-2 text-xs text-slate-700 dash-muted border border-slate-200 hover:border-slate-300 shadow-sm dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 transition hover:bg-slate-50 dark:hover:bg-slate-750 flex items-center gap-2 max-w-xs overflow-hidden">
+                <svg class="w-4 h-4 shrink-0 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                <div class="min-w-0 flex-1 truncate">
+                    <div class="font-semibold text-slate-900 dark:text-slate-100 truncate">${esc(file.name)}</div>
+                    <div class="mt-0.5 text-[10px] truncate">${esc(mime || 'Lampiran')} ${file.size ? '• ' + Math.round(file.size/1024) + ' KB' : ''}</div>
+                </div>
+            </a>`;
         }
 
         function renderAttachments(files = []) {
@@ -357,7 +446,7 @@
                         <p class="dash-history-group-title">${label}</p>
                         <div class="space-y-2">
                             ${grouped[label].map((chat) => `
-                                <div class="dash-history ${chat.id === chatId ? 'active' : ''} ${chat.id === selectingChatId ? 'ring-2 ring-cyan-300 dark:ring-cyan-700 opacity-80' : ''} rounded-2xl border p-3" data-chat="${chat.id}">
+                                <div class="dash-history ${chat.id === chatId ? 'active' : ''} rounded-2xl border p-3" data-chat="${chat.id}">
                                     <button type="button" class="w-full text-left" onclick="selectChat(${chat.id})">
                                         <div class="flex items-start justify-between gap-3">
                                             <div class="min-w-0">
@@ -414,8 +503,6 @@
         }
 
         async function loadChat(id) {
-            selectingChatId = id;
-            showHistoryLoading(true);
             const res = await fetch(`/chats/${id}`, { headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } });
             if (!res.ok) throw new Error('Gagal memuat chat.');
             return res.json();
@@ -423,7 +510,6 @@
 
         window.selectChat = async (id) => {
             try {
-                renderHistory();
                 const data = await loadChat(id);
                 currentChat = data.chat;
                 chatId = id;
@@ -431,7 +517,7 @@
                 renderHistory();
                 renderMessages((currentChat.messages || []).map((m) => ({ ...m, html: m.role === 'assistant' ? markdownToHtml(m.content || '') : undefined })));
                 closeSidebar();
-            } catch (e) { alert(e.message); } finally { showHistoryLoading(false); renderHistory(); }
+            } catch (e) { alert(e.message); }
         };
 
         window.renameChat = async (id) => {
@@ -505,6 +591,15 @@
                     setStatus('loading', 'Sedang menerima jawaban AI secara real-time...');
                 });
 
+                source.addEventListener('status', (event) => {
+                    try {
+                        const payload = JSON.parse(event.data);
+                        setStatus('loading', payload.message || 'Mencoba menghubungkan ulang ke layanan AI...');
+                    } catch (_) {
+                        setStatus('loading', 'Mencoba menghubungkan ulang ke layanan AI...');
+                    }
+                });
+
                 source.addEventListener('done', (event) => {
                     const payload = JSON.parse(event.data);
                     draft.content = payload.assistant_message.content;
@@ -559,16 +654,137 @@
             }
         });
 
-        fileInput.addEventListener('change', function (e) {
-            selectedFiles = Array.from(e.target.files);
+        function renderPreview() {
             previewContainer.innerHTML = '';
             if (!selectedFiles.length) return previewContainer.classList.add('hidden');
             previewContainer.classList.remove('hidden');
-            previewContainer.innerHTML = selectedFiles.map((file) => file.type.startsWith('image/')
-                ? `<img src="${URL.createObjectURL(file)}" class="h-16 w-16 rounded-2xl object-cover shadow-sm">`
-                : `<div class="rounded-2xl bg-slate-100 px-3 py-2 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-200"><div class="font-semibold">${esc(file.name)}</div><div class="mt-1 dash-muted">${esc(file.type || 'Dokumen')}</div></div>`
-            ).join('');
+            previewContainer.innerHTML = selectedFiles.map((file, i) => {
+                const url = URL.createObjectURL(file);
+                let media = `<div class="rounded-2xl bg-white shadow-sm px-3 py-2 border border-slate-200 flex items-center text-xs dark:bg-slate-800 dark:border-slate-700 text-slate-700 dark:text-slate-200"><svg class="w-3.5 h-3.5 mr-1.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg><span class="truncate max-w-[120px]">${esc(file.name)}</span></div>`;
+                if (file.type.startsWith('image/')) media = `<img src="${url}" class="h-14 w-14 rounded-2xl object-cover shadow-md border border-slate-200 dark:border-slate-700">`;
+                if (file.type.startsWith('video/')) media = `<video src="${url}" class="h-14 w-14 rounded-2xl object-cover shadow-md border border-slate-200 dark:border-slate-700"></video>`;
+                if (file.type.startsWith('audio/')) media = `<div class="rounded-2xl bg-white shadow-sm px-3 py-2 border border-slate-200 flex items-center text-xs dark:bg-slate-800 dark:border-slate-700 text-slate-700 dark:text-slate-200"><svg class="w-4 h-4 mr-1.5 text-indigo-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg><span class="truncate max-w-[120px]">${esc(file.name)}</span></div>`;
+
+                return `<div class="relative group cursor-pointer" onclick="selectedFiles.splice(${i}, 1); renderPreview();" title="Klik untuk menghapus">
+                    ${media}
+                    <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        fileInput.addEventListener('change', function (e) {
+            selectedFiles = [...selectedFiles, ...Array.from(e.target.files)];
+            renderPreview();
+            fileInput.value = '';
         });
+
+        const recordButton = document.getElementById('record-button');
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+
+        if (recordButton) {
+            recordButton.addEventListener('click', async () => {
+                if (isRecording) {
+                    mediaRecorder.stop();
+                    return;
+                }
+
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/ogg', 'audio/wav'];
+                    const supportedMime = mimeTypes.find(type => MediaRecorder.isTypeSupported(type)) || 'audio/webm';
+                    
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: supportedMime });
+
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        if (event.data.size > 0) audioChunks.push(event.data);
+                    });
+
+                    mediaRecorder.addEventListener('stop', () => {
+                        stream.getTracks().forEach(track => track.stop());
+                        const audioBlob = new Blob(audioChunks, { type: supportedMime });
+                        const extension = supportedMime.includes('ogg') ? '.ogg' : '.webm';
+                        const audioFile = new File([audioBlob], `Voice_Note_${new Date().getTime()}${extension}`, { type: supportedMime });
+                        selectedFiles.push(audioFile);
+                        renderPreview();
+                        
+                        isRecording = false;
+                    });
+
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    isRecording = true;
+                } catch (e) {
+                    window.appToast?.('Gagal mengakses mikropon. Pastikan izin telah diberikan.', 'error');
+                }
+            });
+        }
+
+        const dictateButton = document.getElementById('dictate-button');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isDictating = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'id-ID';
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                if (finalTranscript) {
+                    const currentPos = messageInput.selectionStart;
+                    const textBefore = messageInput.value.substring(0, currentPos);
+                    const textAfter = messageInput.value.substring(currentPos);
+                    messageInput.value = textBefore + finalTranscript + ' ' + textAfter;
+                    messageInput.dispatchEvent(new Event('input'));
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                stopDictation();
+                if (event.error === 'not-allowed') {
+                    window.appToast?.('Izin mikropon ditolak.', 'error');
+                }
+            };
+
+            recognition.onend = () => {
+                if (isDictating) recognition.start();
+            };
+
+            function stopDictation() {
+                isDictating = false;
+                recognition.stop();
+                dictateButton.classList.remove('animate-pulse', 'is-active');
+            }
+
+            dictateButton.addEventListener('click', () => {
+                if (isDictating) {
+                    stopDictation();
+                } else {
+                    isDictating = true;
+                    recognition.start();
+                    dictateButton.classList.add('animate-pulse', 'is-active');
+                }
+            });
+        } else {
+            dictateButton.classList.add('hidden');
+        }
 
         messagesContainer.addEventListener('click', async (event) => {
             const copyButton = event.target.closest('[data-copy-message]');
@@ -624,7 +840,7 @@
             previewContainer.innerHTML = '';
             previewContainer.classList.add('hidden');
             sendButton.disabled = true;
-            sendButton.textContent = 'Mengirim...';
+            sendButton.classList.add('opacity-60');
 
             try {
                 await submitChatMessage(message, selectedFiles);
@@ -635,7 +851,7 @@
             } finally {
                 selectedFiles = [];
                 sendButton.disabled = false;
-                sendButton.textContent = 'Kirim';
+                sendButton.classList.remove('opacity-60');
             }
         });
 
@@ -652,7 +868,3 @@
         renderMessages((selectedData?.messages || []).map((m) => ({ ...m, html: m.role === 'assistant' ? markdownToHtml(m.content || '') : undefined })));
     </script>
 </x-app-layout>
-
-
-
-

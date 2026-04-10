@@ -27,7 +27,17 @@
         .dash-markdown th { background: rgba(148,163,184,.08); font-weight: 600; }
         .dash-markdown code:not(pre code) { border-radius: .5rem; background: rgba(148,163,184,.10); padding: .15rem .4rem; font-size: .92em; }
         .dash-markdown pre { overflow: auto; border-radius: 1rem; background: rgba(15,23,42,.92); padding: 1rem; color: #e2e8f0; margin-top: .85rem; }
-        .dash-input-shell { border-radius: 28px; padding: 8px; }
+        .dash-input-shell {
+            border-radius: 28px;
+            padding: 8px;
+            background: linear-gradient(180deg, #eef4fb 0%, #e6edf7 100%) !important;
+            border: 1px solid #d5e0ee !important;
+        }
+        html.dark .dash-input-shell {
+            background: linear-gradient(180deg, #061536 0%, #081739 100%) !important;
+            border: 1px solid rgba(62, 115, 193, .30) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 14px 32px -24px rgba(2, 8, 24, .95);
+        }
         .dash-input-bar {
             display: flex;
             align-items: center;
@@ -44,13 +54,13 @@
             box-shadow: 0 10px 30px -22px rgba(15, 23, 42, .35);
         }
         html.dark .dash-input-bar {
-            background: linear-gradient(90deg, #252525 0%, #343434 100%);
-            border: 1px solid rgba(255,255,255,.08);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+            background: linear-gradient(90deg, #272a31 0%, #3a3c44 100%);
+            border: 1px solid rgba(114, 149, 203, .22);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
         }
         html.dark .dash-input-bar:focus-within {
-            border-color: rgba(255,255,255,.08);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+            border-color: rgba(77, 175, 216, .55);
+            box-shadow: 0 0 0 2px rgba(77, 175, 216, .16), inset 0 1px 0 rgba(255,255,255,.05);
         }
         .dash-icon-btn {
             width: 42px;
@@ -97,10 +107,14 @@
             padding: .35rem .2rem;
             font-size: .98rem;
             line-height: 1.45rem;
+            caret-color: #0f172a;
         }
-        html.dark .dash-message-input { color: #f8fafc; }
+        html.dark .dash-message-input {
+            color: #e7edf9;
+            caret-color: #8fd6ff;
+        }
         .dash-message-input::placeholder { color: #7c8ca3; }
-        html.dark .dash-message-input::placeholder { color: #b8b8b8; }
+        html.dark .dash-message-input::placeholder { color: #aab9d4; }
         .dash-message-input:focus { outline: none; }
         .dash-status { display:flex; align-items:center; gap:.55rem; border-radius:1rem; padding:.8rem 1rem; font-size:.85rem; }
         .dash-status.loading { background: rgba(8,145,178,.08); color:#0f766e; }
