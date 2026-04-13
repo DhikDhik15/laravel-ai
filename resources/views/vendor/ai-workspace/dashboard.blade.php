@@ -576,6 +576,7 @@
         async function streamReply(streamUrl) {
             const msgs = currentChat?.messages ? [...currentChat.messages] : [];
             const draft = { role:'assistant', content:'', html:'<div class="typing"><span></span><span></span><span></span></div>', files:[] };
+            let receivedDelta = false;
             msgs.push(draft);
             currentChat = { ...(currentChat || {}), messages: msgs };
             renderMessages(msgs);
@@ -586,6 +587,7 @@
                 source.addEventListener('delta', (event) => {
                     const payload = JSON.parse(event.data);
                     draft.content += payload.delta || '';
+                    receivedDelta = receivedDelta || Boolean(payload.delta);
                     draft.html = markdownToHtml(draft.content);
                     renderMessages(msgs);
                     setStatus('loading', 'Sedang menerima jawaban AI secara real-time...');
@@ -625,6 +627,14 @@
 
                 source.addEventListener('error', (event) => {
                     source.close();
+
+                    if (receivedDelta || String(draft.content || '').trim() !== '') {
+                        draft.html = markdownToHtml(draft.content || '');
+                        renderMessages(msgs);
+                        setStatus('error', 'Koneksi stream terputus. Jawaban parsial berhasil dipertahankan.');
+                        resolve();
+                        return;
+                    }
 
                     try {
                         if (event?.data) {

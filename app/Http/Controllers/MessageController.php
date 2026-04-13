@@ -83,21 +83,26 @@ class MessageController extends Controller
                         }
 
                         if ($event instanceof StreamEnd) {
-                            $assistantMessage = $this->lifecycle->storeAssistantMessage($chat, $reply);
-                            $chat = $chat->fresh();
-
-                            $this->emitSseEvent('done', [
-                                'assistant_message' => [
-                                    'id' => $assistantMessage->getKey(),
-                                    'role' => 'assistant',
-                                    'content' => $reply,
-                                    'html' => Str::markdown($reply),
-                                ],
-                                'chat' => $this->lifecycle->chatPayload($chat),
-                            ]);
-
+                            $this->finalizeAssistantReply($chat, $reply);
                             return;
                         }
+                    }
+
+                    // Some providers can end stream without an explicit StreamEnd event.
+                    // Keep partial output instead of returning an error-only state.
+                    if ($reply !== '') {
+                        Log::warning('SSE stream ended without StreamEnd event', [
+                            'chat_id' => $chat->id,
+                            'message_id' => $message->id,
+                            'attempt' => $attempt,
+                        ]);
+
+                        $this->emitSseEvent('status', [
+                            'message' => 'Koneksi stream berakhir lebih cepat. Menyimpan jawaban parsial yang sudah diterima.',
+                        ]);
+                        $this->finalizeAssistantReply($chat, $reply);
+
+                        return;
                     }
                 } catch (\Throwable $e) {
                     $retryable = $this->isRetryableAiError($e);
@@ -123,6 +128,22 @@ class MessageController extends Controller
                         continue;
                     }
 
+                    if ($reply !== '') {
+                        Log::warning('SSE stream failed after partial output; returning partial response', [
+                            'chat_id' => $chat->id,
+                            'message_id' => $message->id,
+                            'attempt' => $attempt,
+                            'error' => $e->getMessage(),
+                        ]);
+
+                        $this->emitSseEvent('status', [
+                            'message' => 'Koneksi sempat terputus. Menyimpan jawaban parsial yang sudah diterima.',
+                        ]);
+                        $this->finalizeAssistantReply($chat, $reply);
+
+                        return;
+                    }
+
                     $this->emitSseEvent('error', [
                         'message' => $this->friendlyAiErrorMessage($e),
                         'retryable' => $retryable,
@@ -139,7 +160,24 @@ class MessageController extends Controller
         }, 200, [
             'Content-Type' => 'text/event-stream',
             'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
             'X-Accel-Buffering' => 'no',
+        ]);
+    }
+
+    private function finalizeAssistantReply(Chat $chat, string $reply): void
+    {
+        $assistantMessage = $this->lifecycle->storeAssistantMessage($chat, $reply);
+        $chat = $chat->fresh();
+
+        $this->emitSseEvent('done', [
+            'assistant_message' => [
+                'id' => $assistantMessage->getKey(),
+                'role' => 'assistant',
+                'content' => $reply,
+                'html' => Str::markdown($reply),
+            ],
+            'chat' => $this->lifecycle->chatPayload($chat),
         ]);
     }
 
