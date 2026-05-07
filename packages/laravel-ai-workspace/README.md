@@ -34,6 +34,7 @@ Optional install variants:
 php artisan ai-workspace:install --migrate
 php artisan ai-workspace:install --force
 php artisan ai-workspace:install --without-views
+php artisan ai-workspace:install --with-stubs
 ```
 
 3. Configure responder and models in `config/ai-workspace.php`
@@ -44,7 +45,15 @@ php artisan ai-workspace:install --without-views
     'message' => App\Models\Message::class,
 ],
 
-'ai_responder' => App\Services\GeminiService::class,
+'ai_responder' => App\Services\AiWorkspaceResponder::class,
+```
+
+You can also set these via environment variables:
+
+```env
+AI_WORKSPACE_CHAT_MODEL=App\\Models\\Chat
+AI_WORKSPACE_MESSAGE_MODEL=App\\Models\\Message
+AI_WORKSPACE_RESPONDER=App\\Services\\AiWorkspaceResponder
 ```
 
 ## Route Configuration

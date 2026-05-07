@@ -16,6 +16,7 @@ class InstallCommandTest extends TestCase
         $this->assertContains('without-docs', $options);
         $this->assertContains('without-migrations', $options);
         $this->assertContains('without-views', $options);
+        $this->assertContains('with-stubs', $options);
         $this->assertContains('migrate', $options);
     }
 

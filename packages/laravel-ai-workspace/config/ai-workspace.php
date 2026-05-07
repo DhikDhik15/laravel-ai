@@ -1,16 +1,12 @@
 <?php
 
-use App\Models\Chat;
-use App\Models\Message;
-use App\Services\GeminiService;
-
 return [
     'models' => [
-        'chat' => Chat::class,
-        'message' => Message::class,
+        'chat' => env('AI_WORKSPACE_CHAT_MODEL', 'App\\Models\\Chat'),
+        'message' => env('AI_WORKSPACE_MESSAGE_MODEL', 'App\\Models\\Message'),
     ],
 
-    'ai_responder' => GeminiService::class,
+    'ai_responder' => env('AI_WORKSPACE_RESPONDER', 'App\\Services\\AiWorkspaceResponder'),
 
     'route_enabled' => env('AI_WORKSPACE_ROUTE_ENABLED', true),
 

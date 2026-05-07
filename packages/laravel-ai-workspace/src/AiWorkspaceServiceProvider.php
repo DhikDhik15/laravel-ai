@@ -30,7 +30,10 @@ class AiWorkspaceServiceProvider extends ServiceProvider
             $responder = config('ai-workspace.ai_responder');
 
             if (! is_string($responder) || ! class_exists($responder)) {
-                throw new InvalidArgumentException('Configured AI responder class is invalid.');
+                throw new InvalidArgumentException(
+                    'Configured AI responder class is invalid. Set ai-workspace.ai_responder in config/ai-workspace.php '
+                    .'or AI_WORKSPACE_RESPONDER in your .env.'
+                );
             }
 
             $instance = $app->make($responder);
