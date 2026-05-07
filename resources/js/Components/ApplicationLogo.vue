@@ -2,11 +2,13 @@
 defineOptions({
     inheritAttrs: false,
 });
+
+const logoUrl = '/images/ai-workspace-logo-transparent.png';
 </script>
 
 <template>
     <img
-        src="/images/ai-workspace-logo-transparent.png"
+        :src="logoUrl"
         alt="AI Workspace Logo"
         v-bind="$attrs"
     >
