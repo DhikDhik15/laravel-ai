@@ -29,7 +29,7 @@ class AttachmentPreparer
                 'mime' => $mime,
                 'size' => $file->getSize(),
                 'type' => $this->detectType($mime, $file->getClientOriginalExtension()),
-                'url' => asset('storage/' . $path),
+                'url' => asset('storage/'.$path),
             ];
 
             $attachments[] = $attachment;

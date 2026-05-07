@@ -40,7 +40,7 @@ class WorkspaceModelResolver
 
     protected function resolveConfiguredClass(string $key): string
     {
-        $class = config('ai-workspace.' . $key);
+        $class = config('ai-workspace.'.$key);
 
         if (! is_string($class) || ! class_exists($class)) {
             throw new InvalidArgumentException("Configured class for [ai-workspace.$key] is invalid.");

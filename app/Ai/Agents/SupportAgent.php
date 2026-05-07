@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Ai\Agents;
- 
+
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Model;
 use Laravel\Ai\Attributes\Provider;
@@ -41,6 +41,7 @@ class SupportAgent implements Agent, Conversational, HasTools
             if (is_array($message)) {
                 return new Message($message['role'], $message['content']);
             }
+
             return $message;
         }, $history);
 
@@ -67,9 +68,9 @@ class SupportAgent implements Agent, Conversational, HasTools
         }
 
         return "Anda adalah asisten support untuk aplikasi Laravel AI.\n"
-            . "Tugas Anda adalah menjawab pertanyaan user berdasarkan riwayat percakapan.\n\n"
-            . "Aturan:\n"
-            . implode("\n", $rules);
+            ."Tugas Anda adalah menjawab pertanyaan user berdasarkan riwayat percakapan.\n\n"
+            ."Aturan:\n"
+            .implode("\n", $rules);
     }
 
     /**

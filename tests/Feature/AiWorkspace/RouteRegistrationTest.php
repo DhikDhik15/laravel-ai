@@ -16,7 +16,7 @@ class RouteRegistrationTest extends TestCase
             'ai-workspace.route_name_prefix' => 'aiw.',
         ]);
 
-        app('router')->setRoutes(new RouteCollection());
+        app('router')->setRoutes(new RouteCollection);
 
         require base_path('packages/laravel-ai-workspace/routes/web.php');
 
@@ -30,7 +30,7 @@ class RouteRegistrationTest extends TestCase
             ->values()
             ->all();
 
-        $this->assertContains('aiw.dashboard', $routeNames, 'Registered route names: ' . implode(', ', $routeNames));
+        $this->assertContains('aiw.dashboard', $routeNames, 'Registered route names: '.implode(', ', $routeNames));
         $this->assertContains('aiw.messages.send', $routeNames);
         $this->assertContains('aiw.messages.stream', $routeNames);
         $this->assertContains('aiw.chats.show', $routeNames);

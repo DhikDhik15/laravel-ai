@@ -16,7 +16,7 @@ class AiWorkspaceServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/ai-workspace.php', 'ai-workspace');
+        $this->mergeConfigFrom(__DIR__.'/../config/ai-workspace.php', 'ai-workspace');
 
         $this->app->singleton(ChatSummaryResolver::class);
         $this->app->singleton(AttachmentPreparer::class);
@@ -45,26 +45,26 @@ class AiWorkspaceServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'ai-workspace');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'ai-workspace');
 
         if (config('ai-workspace.route_enabled', true)) {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         }
 
         $this->publishes([
-            __DIR__ . '/../config/ai-workspace.php' => config_path('ai-workspace.php'),
+            __DIR__.'/../config/ai-workspace.php' => config_path('ai-workspace.php'),
         ], 'ai-workspace-config');
 
         $this->publishes([
-            __DIR__ . '/../README.md' => base_path('docs/laravel-ai-workspace.md'),
+            __DIR__.'/../README.md' => base_path('docs/laravel-ai-workspace.md'),
         ], 'ai-workspace-docs');
 
         $this->publishes([
-            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+            __DIR__.'/../database/migrations/' => database_path('migrations'),
         ], 'ai-workspace-migrations');
 
         $this->publishes([
-            __DIR__ . '/../resources/views/' => resource_path('views/vendor/ai-workspace'),
+            __DIR__.'/../resources/views/' => resource_path('views/vendor/ai-workspace'),
         ], 'ai-workspace-views');
 
         if ($this->app->runningInConsole()) {

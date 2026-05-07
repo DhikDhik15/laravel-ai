@@ -12,8 +12,7 @@ class DashboardController
     public function __construct(
         private ChatPayloadTransformer $transformer,
         private WorkspaceModelResolver $models
-    ) {
-    }
+    ) {}
 
     public function __invoke(Request $request): View
     {
@@ -57,6 +56,6 @@ class DashboardController
 
     private function routeName(string $name): string
     {
-        return (string) config('ai-workspace.route_name_prefix', '') . $name;
+        return (string) config('ai-workspace.route_name_prefix', '').$name;
     }
 }

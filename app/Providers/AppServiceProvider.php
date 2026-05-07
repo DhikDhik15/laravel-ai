@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Handler\StreamHandler;
+use GuzzleHttp\HandlerStack;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,19 +17,19 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Bypass broken PHP cURL extension by forcing StreamHandler
-        $this->app->bind(\GuzzleHttp\ClientInterface::class, function () {
-            return new \GuzzleHttp\Client([
-                'handler' => \GuzzleHttp\HandlerStack::create(
-                    new \GuzzleHttp\Handler\StreamHandler()
-                )
+        $this->app->bind(ClientInterface::class, function () {
+            return new Client([
+                'handler' => HandlerStack::create(
+                    new StreamHandler
+                ),
             ]);
         });
 
-        $this->app->bind(\GuzzleHttp\Client::class, function () {
-            return new \GuzzleHttp\Client([
-                'handler' => \GuzzleHttp\HandlerStack::create(
-                    new \GuzzleHttp\Handler\StreamHandler()
-                )
+        $this->app->bind(Client::class, function () {
+            return new Client([
+                'handler' => HandlerStack::create(
+                    new StreamHandler
+                ),
             ]);
         });
     }

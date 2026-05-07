@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatPayloadTransformer
 {
-    public function __construct(private ChatSummaryResolver $summaryResolver)
-    {
-    }
+    public function __construct(private ChatSummaryResolver $summaryResolver) {}
 
     public function transform(Model $chat, bool $withMessages = false): array
     {

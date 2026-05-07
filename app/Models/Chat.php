@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-
 class Chat extends Model
 {
     protected $table = 'chats';
@@ -22,7 +21,7 @@ class Chat extends Model
     protected $casts = [
         'last_message_at' => 'datetime',
     ];
-    
+
     public function messages()
     {
         return $this->hasMany(Message::class);

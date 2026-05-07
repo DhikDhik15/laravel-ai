@@ -10,8 +10,7 @@ class ChatLifecycleManager
     public function __construct(
         private WorkspaceModelResolver $models,
         private ChatSummaryResolver $summaries
-    ) {
-    }
+    ) {}
 
     public function findUserChat(int $userId, ?int $chatId): ?Model
     {
@@ -92,7 +91,7 @@ class ChatLifecycleManager
             return Str::limit($text, 50, '...');
         }
 
-        return 'Chat baru (' . count($attachments) . ' file)';
+        return 'Chat baru ('.count($attachments).' file)';
     }
 
     public function chatPayload(Model $chat): array

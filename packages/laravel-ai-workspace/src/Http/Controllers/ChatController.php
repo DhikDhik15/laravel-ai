@@ -12,8 +12,7 @@ class ChatController
     public function __construct(
         private ChatPayloadTransformer $transformer,
         private WorkspaceModelResolver $models
-    ) {
-    }
+    ) {}
 
     public function show(Request $request, int $chat): JsonResponse
     {

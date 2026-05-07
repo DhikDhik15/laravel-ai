@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class Message extends Model
 {
     protected $table = 'messages';
@@ -22,7 +21,6 @@ class Message extends Model
 
     protected $hidden = ['updated_at'];
 
-    
     public function chat()
     {
         return $this->belongsTo(Chat::class);

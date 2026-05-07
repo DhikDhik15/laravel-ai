@@ -7,13 +7,14 @@ use AiWorkspace\Support\AttachmentPreparer;
 use AiWorkspace\Support\ChatLifecycleManager;
 use App\Models\Chat;
 use App\Models\Message;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Ai\Streaming\Events\StreamEnd;
 use Laravel\Ai\Streaming\Events\TextDelta;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MessageController extends Controller
 {
@@ -21,15 +22,14 @@ class MessageController extends Controller
         private StreamsChatResponses $responder,
         private AttachmentPreparer $attachments,
         private ChatLifecycleManager $lifecycle
-    ) {
-    }
+    ) {}
 
     public function send(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'chat_id' => ['nullable', 'integer'],
             'message' => ['nullable', 'string'],
-            'files.*' => ['nullable', 'file', 'max:' . config('ai-workspace.max_file_kb', 10240)],
+            'files.*' => ['nullable', 'file', 'max:'.config('ai-workspace.max_file_kb', 10240)],
         ]);
 
         $text = trim((string) ($validated['message'] ?? ''));
@@ -60,7 +60,7 @@ class MessageController extends Controller
         ]);
     }
 
-    public function stream(Request $request, Chat $chat, Message $message): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function stream(Request $request, Chat $chat, Message $message): StreamedResponse
     {
         abort_unless($chat->user_id === $request->user()->id, 404);
         abort_unless($message->chat_id === $chat->id && $message->role === 'user', 404);
@@ -84,6 +84,7 @@ class MessageController extends Controller
 
                         if ($event instanceof StreamEnd) {
                             $this->finalizeAssistantReply($chat, $reply);
+
                             return;
                         }
                     }
@@ -184,14 +185,14 @@ class MessageController extends Controller
     private function emitSseEvent(string $event, array $payload): void
     {
         echo "event: {$event}\n";
-        echo 'data: ' . json_encode($payload) . "\n\n";
+        echo 'data: '.json_encode($payload)."\n\n";
         @ob_flush();
         @flush();
     }
 
     private function isRetryableAiError(\Throwable $e): bool
     {
-        if ($e instanceof \Illuminate\Http\Client\ConnectionException) {
+        if ($e instanceof ConnectionException) {
             return true;
         }
 

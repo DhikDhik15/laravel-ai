@@ -1,12 +1,16 @@
 <?php
 
+use App\Models\Chat;
+use App\Models\Message;
+use App\Services\GeminiService;
+
 return [
     'models' => [
-        'chat' => App\Models\Chat::class,
-        'message' => App\Models\Message::class,
+        'chat' => Chat::class,
+        'message' => Message::class,
     ],
 
-    'ai_responder' => App\Services\GeminiService::class,
+    'ai_responder' => GeminiService::class,
 
     'disk' => env('AI_WORKSPACE_DISK', 'public'),
 

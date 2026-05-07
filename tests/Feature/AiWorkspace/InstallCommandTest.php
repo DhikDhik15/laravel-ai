@@ -28,4 +28,3 @@ class InstallCommandTest extends TestCase
         ])->assertSuccessful();
     }
 }
-

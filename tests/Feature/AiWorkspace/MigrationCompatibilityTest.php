@@ -66,4 +66,3 @@ class MigrationCompatibilityTest extends TestCase
         $this->assertTrue(Schema::hasTable('messages'));
     }
 }
-

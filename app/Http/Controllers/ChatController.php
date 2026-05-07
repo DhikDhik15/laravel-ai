@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function __construct(private ChatPayloadTransformer $transformer)
-    {
-    }
+    public function __construct(private ChatPayloadTransformer $transformer) {}
 
     public function show(Request $request, Chat $chat): JsonResponse
     {

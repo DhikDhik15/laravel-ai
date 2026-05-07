@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function __construct(private ChatPayloadTransformer $transformer)
-    {
-    }
+    public function __construct(private ChatPayloadTransformer $transformer) {}
 
     public function index(Request $request): View
     {

@@ -6,6 +6,7 @@ use AiWorkspace\Contracts\StreamsChatResponses;
 use AiWorkspace\Support\AttachmentPreparer;
 use AiWorkspace\Support\ChatLifecycleManager;
 use AiWorkspace\Support\WorkspaceModelResolver;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -21,15 +22,14 @@ class MessageController
         private AttachmentPreparer $attachments,
         private ChatLifecycleManager $lifecycle,
         private WorkspaceModelResolver $models
-    ) {
-    }
+    ) {}
 
     public function send(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'chat_id' => ['nullable', 'integer'],
             'message' => ['nullable', 'string'],
-            'files.*' => ['nullable', 'file', 'max:' . config('ai-workspace.max_file_kb', 10240)],
+            'files.*' => ['nullable', 'file', 'max:'.config('ai-workspace.max_file_kb', 10240)],
         ]);
 
         $text = trim((string) ($validated['message'] ?? ''));
@@ -151,20 +151,20 @@ class MessageController
 
     private function routeName(string $name): string
     {
-        return (string) config('ai-workspace.route_name_prefix', '') . $name;
+        return (string) config('ai-workspace.route_name_prefix', '').$name;
     }
 
     private function emitSseEvent(string $event, array $payload): void
     {
         echo "event: {$event}\n";
-        echo 'data: ' . json_encode($payload) . "\n\n";
+        echo 'data: '.json_encode($payload)."\n\n";
         @ob_flush();
         @flush();
     }
 
     private function isRetryableAiError(\Throwable $e): bool
     {
-        if ($e instanceof \Illuminate\Http\Client\ConnectionException) {
+        if ($e instanceof ConnectionException) {
             return true;
         }
 
