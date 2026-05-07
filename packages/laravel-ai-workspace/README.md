@@ -2,6 +2,9 @@
 
 Reusable Laravel package for AI chat workspace with persistent history, file attachments, and SSE streaming responses.
 
+## Full Installation Tutorial
+- See complete step-by-step guide: [INSTALLATION.md](./INSTALLATION.md)
+
 ## Features
 - Chat history with title and summary metadata
 - Attachments for image, audio, video, and text documents
