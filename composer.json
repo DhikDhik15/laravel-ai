@@ -8,9 +8,9 @@
     "repositories": [
         {
             "type": "path",
-            "url": "packages/laravel-ai-workspace",
+            "url": "C:/laravel-ai/packages/laravel-ai-workspace",
             "options": {
-                "symlink": false
+                "symlink": true
             }
         }
     ],
